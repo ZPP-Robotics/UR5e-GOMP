@@ -6,16 +6,18 @@ class GOMP:
         self.obstacles.append(obstacle)
 
     def convert_obstacles(self):
-        line_constraints = []
+        obstacle_constraints = []
         for obstacle in self.obstacles:
-            line_constraints.append(obstacle.convert())
+            obstacle_from_lines = obstacle.convert()
+            for line in obstacle_from_lines:
+                obstacle_constraints.append(line)
 
-        return line_constraints
+        return obstacle_constraints
 
     def run_solver(self):
         pass
 
-    def run():
+    def run(self):
         line_constraints_c = self.convert_obstacles()
         gomp_solutions = self.run_solver(line_constraints_c)
 
