@@ -8,7 +8,9 @@ class GOMP:
     def convert_obstacles(self):
         obstacle_constraints = []
         for obstacle in self.obstacles:
-            obstacle_constraints.append(obstacle.convert())
+            obstacle_from_lines = obstacle.convert()
+            for line in obstacle_from_lines:
+                obstacle_constraints.append(line)
 
         return obstacle_constraints
 

@@ -55,8 +55,9 @@ class BoxParallelXYZ(Obstacle):
 
     def convert(self):
         lines = self.to_HorizontalLines()
+        result = []
         for line in lines:
-            line.convert()
+            result.append(line.convert())
 
-        return lines
+        return result
 
