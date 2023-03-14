@@ -34,7 +34,10 @@ class BoxParallelXYZ(Obstacle):
         self.vertexA = ref_point
         self.vertexB = (x, y - width, z)
         self.vertexC = (x + height, y - width, z)
-        self.vertexD = (x + height, z)
+        self.vertexD = (x + height, y, z)
+
+    def get_vertices(self):
+        return (self.vertexA, self.vertexB, self.vertexC, self.vertexD)
     
     def to_HorizontalLines(self):
         vectorAB = tuple(self.vertexB[i] - self.vertexA[i] for i in range(3))
