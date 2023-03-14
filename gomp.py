@@ -15,7 +15,7 @@ class GOMP:
     def run_solver(self):
         pass
 
-    def run():
+    def run(self):
         line_constraints_c = self.convert_obstacles()
         gomp_solutions = self.run_solver(line_constraints_c)
 
