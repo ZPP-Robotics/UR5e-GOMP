@@ -14,7 +14,7 @@ class HorizontalLine:
         self.vector3d = vector3d
 
     def convert(self):
-        pass
+        return (self.point3d, self.vector3d)
 
 class BoxParallelXYZ(Obstacle):
     def __init__(self, ref_point, height, width, depth):
