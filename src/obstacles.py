@@ -1,12 +1,12 @@
 class Obstacle:
-    def __init__(self, ref_point: tuple):
+    def __init__(self, ref_point: tuple[float, float, float]):
         self.ref_point = ref_point
     
     def convert(self):
         pass
 
 class HorizontalLine:
-    def __init__(self, point3d: tuple, vector3d: tuple):
+    def __init__(self, point3d: tuple[float, float, float], vector3d: tuple[float, float, float]):
         self.point3d = point3d
         self.vector3d = vector3d
 
@@ -14,7 +14,7 @@ class HorizontalLine:
         return (self.point3d, self.vector3d)
 
 class BoxParallelXYZ(Obstacle):
-    def __init__(self, ref_point, height, width, depth):
+    def __init__(self, ref_point: tuple[float, float, float], height: float, width: float, depth: float):
         super().__init__(ref_point)
 
         #       (width)
