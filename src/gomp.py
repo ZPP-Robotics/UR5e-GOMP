@@ -1,3 +1,5 @@
+from math import inf
+
 class GOMP:
     def __init__(self):
         self.obstacles = []

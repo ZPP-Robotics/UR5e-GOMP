@@ -1,3 +1,5 @@
+from math import inf
+
 class Obstacle:
     def __init__(self, ref_point: tuple[float, float, float]):
         self.ref_point = ref_point
