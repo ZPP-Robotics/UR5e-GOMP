@@ -60,4 +60,27 @@ class BoxParallelXYZ(Obstacle):
             result.append(line.convert())
 
         return result
+    
+class TwoBoxSetup(Obstacle):
+    def __init__(self, ref_point1: tuple[float, float, float], height1: float, width1: float, depth1: float,
+                 ref_point2: tuple[float, float, float], height2: float, width2: float, depth2: float, maxZ: float, minZ: float):
+        self.box1 = BoxParallelXYZ(ref_point1, height1, width1, depth1)
+        self.box2 = BoxParallelXYZ(ref_point2, height2, width2, depth2)
+        self.maxZ = maxZ
+        self.minZ = minZ
+
+    def convert(self):
+        (vertexA1, vertexB1, vertexC1, vertexD1) = self.box1.get_vertices()
+        (vertexA2, vertexB2, vertexC2, vertexD2) = self.box2.get_vertices()
+        
+        vectorBC = tuple(vertexC1[i] - vertexB1[i] for i in range(3))
+        lineBC = HorizontalLine(vertexB1, vectorBC)
+
+        minx = vertexA1[0]
+        maxx = vertexC2[0]
+
+        miny = vertexC2[1]
+        maxy = vertexA1[1]
+
+        return {lineBC.convert(), (minx, maxx), (miny, maxy), (self.minZ, self.maxZ)}
 
