@@ -59,7 +59,7 @@ class BoxParallelXYZ(Obstacle):
         for line in lines:
             result.append(line.convert())
 
-        return result
+        return {result, (inf, -inf), (inf, -inf), (inf, -inf)}
     
 class TwoBoxSetup(Obstacle):
     def __init__(self, ref_point1: tuple[float, float, float], height1: float, width1: float, depth1: float,
