@@ -18,6 +18,7 @@ class HorizontalLine:
 class BoxParallelXYZ(Obstacle):
     def __init__(self, ref_point: tuple[float, float, float], height: float, width: float, depth: float):
         super().__init__(ref_point)
+        self.depth = depth
 
         #       (width)
         # D --------------- C                   ^ x
@@ -61,7 +62,9 @@ class BoxParallelXYZ(Obstacle):
         for line in lines:
             result.append(line.convert())
 
-        return {result, (-inf, -inf, -inf), (inf, inf, inf)}
+        minz = vertexA[2] - self.depth
+
+        return {result, (-inf, -inf, minz), (inf, inf, inf)}
     
 class TwoBoxSetup(Obstacle):
     def __init__(self, ref_point1: tuple[float, float, float], height1: float, width1: float, depth1: float,
@@ -82,5 +85,16 @@ class TwoBoxSetup(Obstacle):
         miny = vertexC2[1]
         maxy = vertexA1[1]
 
-        return {lineBC.convert(), (minx, miny, -inf) (maxx, maxy, inf)}
+        minz = min(vertexA1[2] - self.box1.depth, vertexA2[2] - self.box2.depth)
+
+        return {lineBC.convert(), (minx, miny, minz) (maxx, maxy, inf)}
+
+class Camera(Obstacle):
+    def __init__(self, ref_point: tuple[float, float, float], height: float):
+        super().__init__(ref_point)
+        self.height = height
+
+    def convert(self):
+
+        return {[], (-inf, -inf, -inf) (inf, inf, self.height)}
 
