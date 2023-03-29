@@ -61,15 +61,13 @@ class BoxParallelXYZ(Obstacle):
         for line in lines:
             result.append(line.convert())
 
-        return {result, (inf, -inf), (inf, -inf), (inf, -inf)}
+        return {result, (-inf, -inf, -inf), (inf, inf, inf)}
     
 class TwoBoxSetup(Obstacle):
     def __init__(self, ref_point1: tuple[float, float, float], height1: float, width1: float, depth1: float,
-                 ref_point2: tuple[float, float, float], height2: float, width2: float, depth2: float, maxZ: float, minZ: float):
+                 ref_point2: tuple[float, float, float], height2: float, width2: float, depth2: float):
         self.box1 = BoxParallelXYZ(ref_point1, height1, width1, depth1)
         self.box2 = BoxParallelXYZ(ref_point2, height2, width2, depth2)
-        self.maxZ = maxZ
-        self.minZ = minZ
 
     def convert(self):
         (vertexA1, vertexB1, vertexC1, vertexD1) = self.box1.get_vertices()
@@ -84,5 +82,5 @@ class TwoBoxSetup(Obstacle):
         miny = vertexC2[1]
         maxy = vertexA1[1]
 
-        return {lineBC.convert(), (minx, maxx), (miny, maxy), (self.minZ, self.maxZ)}
+        return {lineBC.convert(), (minx, miny, -inf) (maxx, maxy, inf)}
 
