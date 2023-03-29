@@ -18,8 +18,8 @@ class GOMP:
             for line in obstacle_from_lines:
                 obstacle_constraints.append(line)
 
-            (minx, miny, minz) = (min(minx, x_constraints[0]), min(miny, y_constraints[0]), min(minz, z_constraints[0]))
-            (maxx, maxy, maxz) = (max(maxx, x_constraints[1]), max(maxy, y_constraints[1]), max(maxz, z_constraints[1]))
+            (minx, miny, minz) = (max(minx, x_constraints[0]), max(miny, y_constraints[0]), max(minz, z_constraints[0]))
+            (maxx, maxy, maxz) = (min(maxx, x_constraints[1]), min(maxy, y_constraints[1]), min(maxz, z_constraints[1]))
 
         return (obstacle_constraints, ((minx, miny, minz), (maxx, maxy, maxz)))
 
