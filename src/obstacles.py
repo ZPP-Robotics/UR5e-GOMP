@@ -8,12 +8,13 @@ class Obstacle:
         pass
 
 class HorizontalLine:
-    def __init__(self, point3d: tuple[float, float, float], vector3d: tuple[float, float, float]):
+    def __init__(self, point3d: tuple[float, float, float], vector3d: tuple[float, float, float], from_top: bool):
         self.point3d = point3d
         self.vector3d = vector3d
+        self.from_top = from_top
 
     def convert(self):
-        return (self.point3d, self.vector3d)
+        return (self.point3d, self.vector3d, self.from_top)
 
 class BoxParallelXYZ(Obstacle):
     def __init__(self, ref_point: tuple[float, float, float], height: float, width: float, depth: float):
@@ -43,10 +44,10 @@ class BoxParallelXYZ(Obstacle):
         vectorAB = tuple(self.vertexB[i] - self.vertexA[i] for i in range(3))
         vectorBC = tuple(self.vertexC[i] - self.vertexB[i] for i in range(3))
 
-        lineAB = HorizontalLine(self.vertexA, vectorAB)
-        lineBC = HorizontalLine(self.vertexB, vectorBC)
-        lineDC = HorizontalLine(self.vertexD, vectorAB)
-        lineAD = HorizontalLine(self.vertexA, vectorBC)
+        lineAB = HorizontalLine(self.vertexA, vectorAB, True)
+        lineBC = HorizontalLine(self.vertexB, vectorBC, True)
+        lineDC = HorizontalLine(self.vertexD, vectorAB, True)
+        lineAD = HorizontalLine(self.vertexA, vectorBC, True)
 
         lines = []
         lines.append(lineAB)
@@ -62,7 +63,7 @@ class BoxParallelXYZ(Obstacle):
         for line in lines:
             result.append(line.convert())
 
-        minz = vertexA[2] - self.depth
+        minz = self.vertexA[2] - self.depth
 
         return {result, (-inf, -inf, minz), (inf, inf, inf)}
     
@@ -77,7 +78,7 @@ class TwoBoxSetup(Obstacle):
         (vertexA2, vertexB2, vertexC2, vertexD2) = self.box2.get_vertices()
         
         vectorBC = tuple(vertexC1[i] - vertexB1[i] for i in range(3))
-        lineBC = HorizontalLine(vertexB1, vectorBC)
+        lineBC = HorizontalLine(vertexB1, vectorBC, True)
 
         minx = vertexA1[0]
         maxx = vertexC2[0]
