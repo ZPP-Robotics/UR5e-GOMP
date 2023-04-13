@@ -88,7 +88,7 @@ class TwoBoxSetup(Obstacle):
 
         minz = min(vertexA1[2] - self.box1.depth, vertexA2[2] - self.box2.depth)
 
-        return {lineBC.convert(), (minx, miny, minz) (maxx, maxy, inf)}
+        return {lineBC.convert(), (minx, miny, minz), (maxx, maxy, inf)}
 
 class Camera(Obstacle):
     def __init__(self, ref_point: tuple[float, float, float], height: float):
@@ -97,5 +97,5 @@ class Camera(Obstacle):
 
     def convert(self):
 
-        return {[], (-inf, -inf, -inf) (inf, inf, self.height)}
+        return {[], (-inf, -inf, -inf), (inf, inf, self.height)}
 
