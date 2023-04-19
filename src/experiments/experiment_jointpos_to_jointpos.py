@@ -6,9 +6,8 @@ sys.path.append('../')
 sys.path.append('../../OSQP-Solver/debug/tests/')
 from experiments_init import create_two_bin_lab_world, move_by_waypoints
 from solver import GOMP
-import pandas as pd
-import rtde_control
 
+# INITIAL SETUP ---------------------------------------------------------------------
 N_DIM = 6
 Q_MIN = -6.283185307179586232
 Q_MAX = 6.283185307179586232
@@ -18,18 +17,16 @@ INF = 1.00000000000000002e+30
 time_step = 0.1
 waypoints_count = 40 + 2
 
-start_pos = [0] * N_DIM
-end_pos = [M_PI] + [0] * (N_DIM - 1)
-
 position_constraints = ([Q_MIN] * N_DIM, [Q_MAX] * N_DIM)
 velocity_constraints = ([-M_PI] * N_DIM, [M_PI] * N_DIM)
 acceleration_constraints = ([-M_PI * 800 / 180] * N_DIM, [M_PI * 800 / 180] * N_DIM)
+#------------------------------------------------------------------------------------
+
+
+start_pos = [1.1109414100646973, -1.7925297222533167, -1.8433074951171875, -1.07748635232959, 1.5788192749023438, 2.88077712059021]
+end_pos = [-0.013442818318502248, -1.2449665826610108, -1.8534693717956543, -1.6163512669005335, 1.5796295404434204, 0.054004184901714325]
 
 world_obstacles = create_two_bin_lab_world()
-# (line, a, b) = world_obstacles[0].convert()
-# print(line)
-# print(a)
-# print(b)
 
 gomp_solver = GOMP(time_step, waypoints_count, position_constraints, velocity_constraints, acceleration_constraints)
 for obstacle in world_obstacles:
@@ -40,57 +37,16 @@ gomp_solver.print_obstacles()
 
 print("RUN")
 waypoints = gomp_solver.run(start_pos, end_pos)
-df = pd.read_csv('output_trajectory.csv', delim_whitespace=True)
-path = df.values
-
-# print(path[::3])
+waypoints = waypoints[:(len(waypoints)//2)]
 
 print(len(waypoints[:(len(waypoints)//2)])//6)
 
-waypoints = waypoints[:(len(waypoints)//2)]
-
-velo = 1
-acc = 1
-blend = 0.1
-
 path = []
 for i in range(0, len(waypoints), 6):
-    help = waypoints[i:i+6]
-    help.append(velo)
-    help.append(acc)
-    help.append(blend)
-    # print(help)
-    path.append(help)
+    next_joint_pos = waypoints[i:i+6]
+    path.append(next_joint_pos)
 
-help = waypoints[-6:-1]
-help.append(velo)
-help.append(acc)
-help.append(blend)
-path.append(help)
+next_joint_pos = waypoints[-6:-1]
+path.append(next_joint_pos)
 
-print(path[::3])
-
-df['velo'] = 1
-df['acc'] = 1
-df['blend'] = 0.5
-
-# TODO - implement obtainindf['velo'] = 1
-# df['acc'] = 1
-# df['blend'] = 0.5g start pos
-start_pos = [0, 0, 0, 0 ,0 ,0]
-# start_pos = [-7.143, -7.435, 7.20, -7.001, 7.12, 7.04]
-# start_pos = [1.1109414100646973, -1.7925297222533167, -1.8433074951171875, -1.07748635232959, 1.5788192749023438, 2.88077712059021]
-#
-print("connecting")
-# print(df)
-# print(df.values[1])
-# print("")
-# print(df.values[::3])
-ROBOT = rtde_control.RTDEControlInterface("10.0.0.219")
-
-ROBOT.moveJ(start_pos)
-print("start")
-ROBOT.moveJ(path[::3])
-print("done")
-# # print(path)
-# move_by_waypoints(start_pos=start_pos, waypoints=waypoints)
+move_by_waypoints(start_pos=start_pos, waypoints=path)
