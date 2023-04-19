@@ -17,8 +17,8 @@ def create_two_bin_lab_world():
 
 def move_by_waypoints(start_pos, 
                       waypoints,
-                      velocity = 200,
-                      acceleration = 20000,
+                      velocity = 0.5,
+                      acceleration = 0.5,
                       dt = 1.0/500,
                       lookahead_time = 0.1,
                       gain = 300):
@@ -28,9 +28,9 @@ def move_by_waypoints(start_pos,
     # Move to starting position
     rtde_c.moveJ(start_pos)
     for q_pos in waypoints:
-        t_start = rtde_c.initPeriod()
+        # t_start = rtde_c.initPeriod()
         rtde_c.servoJ(q_pos, velocity, acceleration, dt, lookahead_time, gain)
-        rtde_c.waitPeriod(t_start)
+        # rtde_c.waitPeriod(t_start)
 
-    rtde_c.servoStop()
-    rtde_c.stopScript()
+    # rtde_c.servoStop()
+    # rtde_c.stopScript()
