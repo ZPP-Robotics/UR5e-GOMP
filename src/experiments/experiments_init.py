@@ -28,8 +28,8 @@ def move_by_waypoints(start_pos,
         rtde_c.servoJ(q_pos, velocity, acceleration, dt, lookahead_time, gain)
         rtde_c.waitPeriod(t_start)
 
-    rtde_c.servoStop()
-    rtde_c.stopScript()
+    # rtde_c.servoStop()
+    # rtde_c.stopScript()
     print("end")
 
 def move_by_waypoints_moveJ(waypoints, start_pos):
