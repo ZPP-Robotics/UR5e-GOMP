@@ -19,7 +19,7 @@ time_step = 0.1
 waypoints_count = 40 + 2
 
 start_pos = [0] * N_DIM
-end_pos = [M_PI//2] + [0] * (N_DIM - 1)
+end_pos = [M_PI] + [0] * (N_DIM - 1)
 
 position_constraints = ([Q_MIN] * N_DIM, [Q_MAX] * N_DIM)
 velocity_constraints = ([-M_PI] * N_DIM, [M_PI] * N_DIM)
@@ -40,8 +40,8 @@ gomp_solver.print_obstacles()
 
 print("RUN")
 waypoints = gomp_solver.run(start_pos, end_pos)
-# df = pd.read_csv('output_trajectory.csv', delim_whitespace=True)
-# path = df.values
+df = pd.read_csv('output_trajectory.csv', delim_whitespace=True)
+path = df.values
 
 # print(path[::3])
 
@@ -49,16 +49,30 @@ print(len(waypoints[:(len(waypoints)//2)])//6)
 
 waypoints = waypoints[:(len(waypoints)//2)]
 
+velo = 1
+acc = 1
+blend = 0.1
+
 path = []
 for i in range(0, len(waypoints), 6):
-    path.append(waypoints[i:i+6])
+    help = waypoints[i:i+6]
+    help.append(velo)
+    help.append(acc)
+    help.append(blend)
+    # print(help)
+    path.append(help)
 
-print(path)
+help = waypoints[-6:-1]
+help.append(velo)
+help.append(acc)
+help.append(blend)
+path.append(help)
 
-#  = waypoints
-# df['velo'] = 1
-# df['acc'] = 1
-# df['blend'] = 0.5
+print(path[::3])
+
+df['velo'] = 1
+df['acc'] = 1
+df['blend'] = 0.5
 
 # TODO - implement obtainindf['velo'] = 1
 # df['acc'] = 1
@@ -68,12 +82,15 @@ start_pos = [0, 0, 0, 0 ,0 ,0]
 # start_pos = [1.1109414100646973, -1.7925297222533167, -1.8433074951171875, -1.07748635232959, 1.5788192749023438, 2.88077712059021]
 #
 print("connecting")
-
+# print(df)
+# print(df.values[1])
+# print("")
+# print(df.values[::3])
 ROBOT = rtde_control.RTDEControlInterface("10.0.0.219")
 
 ROBOT.moveJ(start_pos)
 print("start")
-ROBOT.moveJ(path)
+ROBOT.moveJ(path[::3])
 print("done")
-# print(path)
+# # print(path)
 # move_by_waypoints(start_pos=start_pos, waypoints=waypoints)
