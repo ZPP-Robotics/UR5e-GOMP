@@ -11,7 +11,7 @@ def create_two_bin_lab_world():
     # return [box1, box2]
     setup = TwoBoxSetup((271.07, 507.62, 212.65), 51, 51, 25,
                         (271.07, 0.94, 212.65), 51, 51, 25)
-    return setup
+    return [setup]
 
 
 
