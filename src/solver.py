@@ -1,11 +1,18 @@
 from math import inf
-import sys
-sys.path.append('../OSQP-Solver/debug/tests/')
+# import sys
+# sys.path.append('../../OSQP-Solver/debug/tests/')
 import gomp
 
 class GOMP:
-    def __init__(self):
+    def __init__(self, time_step, waypoints_count, position_constraints, velocity_constraints, acceleration_constraints):
         self.obstacles = []
+        self.time_step = time_step
+        self.waypoints_count = waypoints_count
+
+        self.position_constraints = position_constraints
+        self.velocity_constraints = velocity_constraints
+        self.acceleration_constraints = acceleration_constraints
+                
 
     def add_obstacle(self, obstacle):
         self.obstacles.append(obstacle)
@@ -33,25 +40,20 @@ class GOMP:
         print(maxx, maxy, maxz)
 
 
-    def run_solver(self, start_pos_joints, end_pos_joints, time_step, waypoints_count, 
-                   velocity_constraints, acceleration_constraints, position_constraints, 
+    def run_solver(self, start_pos_joints, end_pos_joints,
                    line_constraints_c, constraints3d: tuple[tuple[float, float, float], tuple[float, float, float]]):
-        N_DIM = 6
-        Q_MIN = -6.283185307179586232
-        Q_MAX = 6.283185307179586232
-        M_PI = 3.14159265358979323846
-        INF = 1.00000000000000002e+30
 
         obstacles = line_constraints_c
 
-        (_, res) = gomp.solve_1(start_pos_joints, end_pos_joints, time_step, waypoints_count, 
-                                velocity_constraints, acceleration_constraints, position_constraints, 
+        (_, res) = gomp.solve_1(start_pos_joints, end_pos_joints, 
+                                self.time_step, self.waypoints_count, 
+                                self.velocity_constraints, self.acceleration_constraints, self.position_constraints, 
                                 constraints3d, obstacles)
         return res
 
-    def run(self):
+    def run(self, start_pos, end_pos):
         (line_constraints_c, constraints3d) = self.convert_obstacles()
-        gomp_solutions = self.run_solver(line_constraints_c, constraints3d)
+        gomp_solutions = self.run_solver(start_pos, end_pos, line_constraints_c, constraints3d)
 
         return gomp_solutions
 
