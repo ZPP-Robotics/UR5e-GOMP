@@ -17,14 +17,21 @@ class GOMP:
         (maxx, maxy, maxz) = (inf, inf, inf)
 
         for obstacle in self.obstacles:
-            (obstacle_from_lines, x_constraints, y_constraints, z_constraints) = obstacle.convert()
+            (obstacle_from_lines, min_constraints, max_constraints) = obstacle.convert()
             for line in obstacle_from_lines:
                 obstacle_constraints.append(line)
 
-            (minx, miny, minz) = (max(minx, x_constraints[0]), max(miny, y_constraints[0]), max(minz, z_constraints[0]))
-            (maxx, maxy, maxz) = (min(maxx, x_constraints[1]), min(maxy, y_constraints[1]), min(maxz, z_constraints[1]))
+            (minx, miny, minz) = (max(minx, min_constraints[0]), max(miny, min_constraints[1]), max(minz, min_constraints[2]))
+            (maxx, maxy, maxz) = (min(maxx, max_constraints[0]), min(maxy, max_constraints[1]), min(maxz, max_constraints[2]))
 
         return (obstacle_constraints, ((minx, miny, minz), (maxx, maxy, maxz)))
+    
+    def print_obstacles(self):
+        (obstacle_constraints, ((minx, miny, minz), (maxx, maxy, maxz))) = self.convert_obstacles()
+        print(obstacle_constraints)
+        print(minx, miny, minz)
+        print(maxx, maxy, maxz)
+
 
     def run_solver(self, start_pos_joints, end_pos_joints, time_step, waypoints_count, 
                    velocity_constraints, acceleration_constraints, position_constraints, 
