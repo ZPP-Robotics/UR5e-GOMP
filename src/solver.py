@@ -41,19 +41,20 @@ class GOMP:
 
 
     def run_solver(self, start_pos_joints, end_pos_joints,
-                   line_constraints_c, constraints3d: tuple[tuple[float, float, float], tuple[float, float, float]]):
+                   line_constraints_c, constraints3d: tuple[tuple[float, float, float], tuple[float, float, float]],
+                   radius):
 
         obstacles = line_constraints_c
 
-        (_, res) = gomp.solve_1(start_pos_joints, end_pos_joints, 
+        (code, res) = gomp.solve_1(start_pos_joints, end_pos_joints, 
                                 self.time_step, self.waypoints_count, 
                                 self.velocity_constraints, self.acceleration_constraints, self.position_constraints, 
-                                constraints3d, obstacles)
-        return res
+                                constraints3d, obstacles, radius)
+        return (code, res)
 
-    def run(self, start_pos, end_pos):
+    def run(self, start_pos, end_pos, radius):
         (line_constraints_c, constraints3d) = self.convert_obstacles()
-        gomp_solutions = self.run_solver(start_pos, end_pos, line_constraints_c, constraints3d)
+        gomp_solutions = self.run_solver(start_pos, end_pos, line_constraints_c, constraints3d, radius)
 
         return gomp_solutions
 
