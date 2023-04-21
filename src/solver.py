@@ -4,7 +4,11 @@ from math import inf
 import gomp
 
 class GOMP:
-    def __init__(self, time_step, waypoints_count, position_constraints, velocity_constraints, acceleration_constraints):
+    def __init__(self, time_step, waypoints_count, 
+                 position_constraints, 
+                 velocity_constraints, 
+                 acceleration_constraints, 
+                 radiuses=[0.0, 0.0, 0.0, 0.0, 0.0]):
         self.obstacles = []
         self.time_step = time_step
         self.waypoints_count = waypoints_count
@@ -12,7 +16,14 @@ class GOMP:
         self.position_constraints = position_constraints
         self.velocity_constraints = velocity_constraints
         self.acceleration_constraints = acceleration_constraints
-                
+
+        self.radiuses = radiuses
+
+    def set_radiuses(self, radiuses):
+        self.radiuses = radiuses
+
+    def set_radius(self, id, radius):
+        self.radiuses[id] = radius
 
     def add_obstacle(self, obstacle):
         self.obstacles.append(obstacle)
@@ -41,20 +52,19 @@ class GOMP:
 
 
     def run_solver(self, start_pos_joints, end_pos_joints,
-                   line_constraints_c, constraints3d: tuple[tuple[float, float, float], tuple[float, float, float]],
-                   radius):
+                   line_constraints_c, constraints3d: tuple[tuple[float, float, float], tuple[float, float, float]]):
 
         obstacles = line_constraints_c
 
         (code, res) = gomp.solve_1(start_pos_joints, end_pos_joints, 
                                 self.time_step, self.waypoints_count, 
                                 self.velocity_constraints, self.acceleration_constraints, self.position_constraints, 
-                                constraints3d, obstacles, radius)
+                                constraints3d, obstacles, self.radiuses)
         return (code, res)
 
-    def run(self, start_pos, end_pos, radius):
+    def run(self, start_pos, end_pos):
         (line_constraints_c, constraints3d) = self.convert_obstacles()
-        gomp_solutions = self.run_solver(start_pos, end_pos, line_constraints_c, constraints3d, radius)
+        gomp_solutions = self.run_solver(start_pos, end_pos, line_constraints_c, constraints3d)
 
         return gomp_solutions
 
