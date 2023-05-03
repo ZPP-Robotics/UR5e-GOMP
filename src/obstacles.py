@@ -91,7 +91,7 @@ class TwoBoxSetup(Obstacle):
 
         return ([lineBC.convert()], (minx, miny, minz), (maxx, maxy, inf))
 
-class Camera(Obstacle):
+class CameraBox(Obstacle):
     def __init__(self, ref_point: tuple[float, float, float], height: float):
         super().__init__(ref_point)
         self.height = height
@@ -99,4 +99,55 @@ class Camera(Obstacle):
     def convert(self):
 
         return ([], (-inf, -inf, -inf), (inf, inf, self.height))
+    
+class Camera(Obstacle):
+    def __init__(self, ref_point: tuple[float, float, float], height: float, width: float):
+        super().__init__(ref_point)
+        self.height = height
 
+                #       (width)
+        # D ------K-------- C                   ^ x
+        # |       |         |                   |
+        # |       |         | (height)          |
+        # |       |         |           y <------------
+        # |       |         |                   |
+        # |       L         |
+        # A - ref_point --- B
+        #  (x, y, z)
+
+        x, y, z = ref_point[0], ref_point[1], ref_point[2]
+
+        self.A = ref_point
+        self.B = (x, y - width, z)
+        self.C = (x + height, y - width, z)
+        self.D = (x + height, y, z)
+        self.K = (x + height, y - width / 2, z)
+        self.L = (x, y - width / 2, z )
+
+    def get_points(self):
+        return (self.A, self.B, self.C, self.D, self.K, self.L)
+    
+    def to_HorizontalLines(self):
+        vectorAD = tuple(self.D[i] - self.A[i] for i in range(3))
+        vectorBC = tuple(self.C[i] - self.B[i] for i in range(3))
+        vectorLK = tuple(self.K[i] - self.L[i] for i in range(3))
+
+        lineAD = HorizontalLine(self.vertexA, vectorAD, False)
+        lineBC = HorizontalLine(self.vertexB, vectorBC, False)
+        lineLK = HorizontalLine(self.vertexD, vectorLK, False)
+
+        lines = []
+        lines.append(lineAD)
+        lines.append(lineBC)
+        lines.append(lineLK)
+
+        return lines
+
+    def convert(self):
+        lines = self.to_HorizontalLines()
+        result = []
+        for line in lines:
+            result.append(line.convert())
+
+        return (result, (-inf, -inf, -int), (inf, inf, inf))
+    
