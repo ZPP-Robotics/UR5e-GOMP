@@ -29,16 +29,16 @@ def move_by_waypoints(start_pos,
     print("connecting to robot")
     robot_ip = "192.168.1.20"
     # rtde_c = rtde_control.RTDEControlInterface("10.0.0.219")
-    # rtde_c = rtde_control.RTDEControlInterface(robot_ip)
+    rtde_c = rtde_control.RTDEControlInterface(robot_ip)
 
     # Move to starting position
-    # print("moving to start position")
-    # rtde_c.moveJ(start_pos)
-    # print("starting movement")
-    # for q_pos in waypoints:
-    #     t_start = rtde_c.initPeriod()
-    #     rtde_c.servoJ(q_pos, velocity, acceleration, dt, lookahead_time, gain)
-    #     rtde_c.waitPeriod(t_start)
+    print("moving to start position")
+    rtde_c.moveJ(start_pos)
+    print("starting movement")
+    for q_pos in waypoints:
+        t_start = rtde_c.initPeriod()
+        rtde_c.servoJ(q_pos, velocity, acceleration, dt, lookahead_time, gain)
+        rtde_c.waitPeriod(t_start)
 
     # rtde_c.servoStop()
     # rtde_c.stopScript()
@@ -57,21 +57,15 @@ def move_by_waypoints_moveJ(waypoints, start_pos):
         next_joint_pos.append(velo)
         next_joint_pos.append(acc)
         next_joint_pos.append(blend)
-        print(next_joint_pos)
+        # print(next_joint_pos)
         path.append(next_joint_pos)
 
-    # next_joint_pos = waypoints[-6:-1]
-    # next_joint_pos.append(velo)
-    # next_joint_pos.append(acc)
-    # next_joint_pos.append(blend)
-    # path.append(next_joint_pos)
+    print(path[::3])
 
-    # print(path[::3])
+    print("connecting")
+    ROBOT = rtde_control.RTDEControlInterface(robot_ip)
 
-    # print("connecting")
-    # ROBOT = rtde_control.RTDEControlInterface(robot_ip)
-
-    # ROBOT.moveJ(start_pos)
-    # print("start")
-    # ROBOT.moveJ(path[::3])
-    # print("done")
+    ROBOT.moveJ(start_pos)
+    print("start")
+    ROBOT.moveJ(path[::3])
+    print("done")
