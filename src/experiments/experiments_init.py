@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 from colorama import Fore, Back, Style
 
-from obstacles import TwoBoxSetup
+from obstacles import TwoBoxSetup, Camera
 from solver import GOMP
 import gomp
 import rtde_control
@@ -10,7 +10,8 @@ import rtde_control
 def create_two_bin_lab_world():
     setup = TwoBoxSetup((0.27107, 0.50762, 0.21265), 0.51, 0.51, 0.25,
                         (0.27107, 0.094, 0.21265), 0.51, 0.51, 0.25)
-    return [setup]
+    camera = Camera((0.37107, 0.50762, 0.41265), 0.1, 0.1)
+    return [setup, camera]
 
 def move_by_waypoints(start_pos, 
                       waypoints,
