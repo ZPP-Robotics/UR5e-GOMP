@@ -6,9 +6,7 @@ sys.path.append('../')
 sys.path.append('../../OSQP-Solver/debug/tests/')
 from colorama import Fore, Back, Style
 
-from experiments_init import create_two_bin_lab_world, move_by_waypoints, move_by_waypoints_moveJ
-from solver import GOMP
-import gomp
+from experiments_init import experiment_joints
 
 # INITIAL SETUP ---------------------------------------------------------------------
 N_DIM = 6
@@ -39,41 +37,6 @@ acceleration_constraints = ([-M_PI * 800 / 180] * N_DIM, [M_PI * 800 / 180] * N_
 
 # experiment(start_pos, end_pos, radiuses)
 
-def experiment(start_pos, end_pos, radiuses):
-    world_obstacles = create_two_bin_lab_world()
-
-    gomp_solver = GOMP(time_step, waypoints_count, position_constraints, velocity_constraints, acceleration_constraints)
-    for obstacle in world_obstacles:
-        gomp_solver.add_obstacle(obstacle)
-
-    print("Obstacles:")
-    gomp_solver.print_obstacles()
-
-    print("Radiuses:")
-    # radiuses = [0.05, 0.05, 0.05, 0.05, 0.15]
-    gomp_solver.set_radiuses(radiuses)
-
-    print("RUN")
-    (code, waypoints) = gomp_solver.run(start_pos, end_pos)
-    waypoints = waypoints[:(len(waypoints)//2)]
-
-    if (code == gomp.OsqpExitCode.kOptimal):
-        print(Fore.GREEN + Style.BRIGHT + "SUCCESS! - Found solution" + Style.RESET_ALL)
-        print(Style.BRIGHT + "Obstacles:" + Style.RESET_ALL)
-        gomp_solver.print_obstacles()
-
-
-        print(Style.BRIGHT + "Waypoint count:" + Style.RESET_ALL)
-        print(len(waypoints[:(len(waypoints))])//6)
-
-        # move_by_waypoints(start_pos=start_pos, waypoints=waypoints)
-        move_by_waypoints_moveJ(start_pos=start_pos, waypoints=waypoints)
-    else:
-        print(Fore.RED + Style.BRIGHT + "ERROR!" + Style.RESET_ALL)
-        print(Style.BRIGHT + "No solution found" + Style.RESET_ALL)
-        print(Style.BRIGHT + "Error code:" + Style.RESET_ALL)
-        print(code)
-
 # ------------------------------------------------------------------------------------
 radiuses = [0.1, 0.1, 0.05, 0.05, 0.15]
 
@@ -87,4 +50,5 @@ print(start_pos)
 end_pos = [-0.16207582155336553, -2.0053416691222132, -1.8414853811264038, -0.8576411169818421, 1.5140776634216309, -0.08804780641664678]
 # end_pos = [-0.013442818318502248, -1.2449665826610108, -1.8534693717956543, -1.6163512669005335, 1.5796295404434204, 0.054004184901714325]
 
-experiment(start_pos, end_pos, radiuses)
+experiment_joints(start_pos, end_pos, radiuses,
+                  time_step, waypoints_count, position_constraints, velocity_constraints, acceleration_constraints)
