@@ -101,7 +101,7 @@ class CameraBox(Obstacle):
         return ([], (-inf, -inf, -inf), (inf, inf, self.height))
     
 class Camera(Obstacle):
-    def __init__(self, ref_point: tuple[float, float, float], height: float, width: float):
+    def __init__(self, ref_point: tuple[float, float, float], width: float, height: float):
         super().__init__(ref_point)
         self.height = height
 
