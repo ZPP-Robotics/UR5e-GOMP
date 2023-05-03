@@ -132,9 +132,9 @@ class Camera(Obstacle):
         vectorBC = tuple(self.C[i] - self.B[i] for i in range(3))
         vectorLK = tuple(self.K[i] - self.L[i] for i in range(3))
 
-        lineAD = HorizontalLine(self.vertexA, vectorAD, False)
-        lineBC = HorizontalLine(self.vertexB, vectorBC, False)
-        lineLK = HorizontalLine(self.vertexD, vectorLK, False)
+        lineAD = HorizontalLine(self.A, vectorAD, True)
+        lineBC = HorizontalLine(self.B, vectorBC, True)
+        lineLK = HorizontalLine(self.L, vectorLK, True)
 
         lines = []
         lines.append(lineAD)
@@ -149,5 +149,5 @@ class Camera(Obstacle):
         for line in lines:
             result.append(line.convert())
 
-        return (result, (-inf, -inf, -int), (inf, inf, inf))
+        return (result, (-inf, -inf, -inf), (inf, inf, inf))
     
