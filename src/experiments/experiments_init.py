@@ -10,7 +10,7 @@ import rtde_control
 def create_two_bin_lab_world():
     setup = TwoBoxSetup((0.27107, 0.50762, 0.21265), 0.51, 0.51, 0.25,
                         (0.27107, 0.094, 0.21265), 0.51, 0.51, 0.25)
-    camera = Camera((0.37107, 0.50762, 0.41265), 0.1, 0.1)
+    camera = Camera((0.55944, 0.38811, 0.61044), 0.1, 0.05)
     return [setup, camera]
 
 def move_by_waypoints(start_pos, 
@@ -47,11 +47,11 @@ def move_by_waypoints(start_pos,
     # rtde_c.stopScript()
     print("end")
 
-def move_by_waypoints_moveJ(waypoints, start_pos):
+def move_by_waypoints_moveJ(waypoints, start_pos, end_pos):
     robot_ip = "192.168.1.20"
     velo = 1
     acc = 1
-    blend = 0.001
+    blend = 0.05
 
     path = []
     for i in range(0, len(waypoints), 6):
@@ -66,14 +66,19 @@ def move_by_waypoints_moveJ(waypoints, start_pos):
     print(Style.BRIGHT + "Waypoints:" + Style.RESET_ALL)
     for el in path:
         print(el)
-    # print(path[::3])
+    # for el in path[20:]:
+    #     print(el)
+       
+    # print(end_pos)
 
     print("connecting to robot")
-    ROBOT = rtde_control.RTDEControlInterface(robot_ip)
+    robot_frequency = 100
+    ROBOT = rtde_control.RTDEControlInterface(robot_ip, robot_frequency)
 
     ROBOT.moveJ(start_pos)
     print("start")
-    ROBOT.moveJ(path[::3])
+    ROBOT.moveJ(path)
+    ROBOT.moveJ(end_pos)
     print("done")
 
 def experiment_joints(start_pos, end_pos, radiuses,
@@ -104,8 +109,10 @@ def experiment_joints(start_pos, end_pos, radiuses,
         print(Style.BRIGHT + "Waypoint count:" + Style.RESET_ALL)
         print(len(waypoints[:(len(waypoints))])//6)
 
+        print(end_pos)
+
         # move_by_waypoints(start_pos=start_pos, waypoints=waypoints)
-        move_by_waypoints_moveJ(start_pos=start_pos, waypoints=waypoints)
+        move_by_waypoints_moveJ(start_pos=start_pos, end_pos=end_pos, waypoints=waypoints)
     else:
         print(Fore.RED + Style.BRIGHT + "ERROR!" + Style.RESET_ALL)
         print(Style.BRIGHT + "No solution found" + Style.RESET_ALL)
