@@ -118,3 +118,22 @@ def experiment_joints(start_pos, end_pos, radiuses,
         print(Style.BRIGHT + "No solution found" + Style.RESET_ALL)
         print(Style.BRIGHT + "Error code:" + Style.RESET_ALL)
         print(code)
+
+def old_version_moveL(waypoints):
+    print("connecting to robot")
+    robot_ip = "192.168.1.20"
+    rtde_c = rtde_control.RTDEControlInterface(robot_ip)
+
+    velo = 0.5
+    acc = 0.5
+    blend = 0.0
+    path = []
+    for i in range(0, len(waypoints), 6):
+        next_joint_pos = []
+        next_joint_pos = waypoints[i:i+6]
+        next_joint_pos.append(velo)
+        next_joint_pos.append(acc)
+        next_joint_pos.append(blend)
+        path.append(next_joint_pos)
+
+    rtde_c.moveL(path)
