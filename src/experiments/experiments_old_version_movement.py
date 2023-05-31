@@ -9,6 +9,7 @@ def run_experiment():
     print("start")
     print("Which path do you want to run?")
     path_id = int(input())
+    print(paths[path_id-1])
 
     old_version_moveL(paths[path_id-1])
 

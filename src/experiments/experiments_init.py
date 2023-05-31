@@ -124,14 +124,14 @@ def old_version_moveL(waypoints):
     robot_ip = "192.168.1.20"
     rtde_c = rtde_control.RTDEControlInterface(robot_ip)
 
-    velo = 0.5
+    vel = 0.5
     acc = 0.5
     blend = 0.0
     path = []
     for i in range(0, len(waypoints), 6):
         next_joint_pos = []
         next_joint_pos = waypoints[i:i+6]
-        next_joint_pos.append(velo)
+        next_joint_pos.append(vel)
         next_joint_pos.append(acc)
         next_joint_pos.append(blend)
         path.append(next_joint_pos)
