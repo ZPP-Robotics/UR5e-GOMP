@@ -1,6 +1,7 @@
 import sys
 sys.path.append('../')
 from colorama import Fore, Back, Style
+import time
 
 from obstacles import TwoBoxSetup, Camera
 from solver import GOMP
@@ -49,14 +50,14 @@ def move_by_waypoints(start_pos,
 
 def move_by_waypoints_moveJ(waypoints, start_pos, end_pos):
     robot_ip = "192.168.1.20"
-    velo = 1
-    acc = 1
+    velo = 3.14
+    acc = 3.14
     blend = 0.05
 
     path = []
     for i in range(0, len(waypoints), 6):
         next_joint_pos = []
-        next_joint_pos = waypoints[i:i+6]
+        next_joint_pos = list(waypoints[i:i+6])
         next_joint_pos.append(velo)
         next_joint_pos.append(acc)
         next_joint_pos.append(blend)
@@ -72,14 +73,19 @@ def move_by_waypoints_moveJ(waypoints, start_pos, end_pos):
     # print(end_pos)
 
     print("connecting to robot")
-    robot_frequency = 100
-    ROBOT = rtde_control.RTDEControlInterface(robot_ip, robot_frequency)
+    # robot_frequency = 100
+    # ROBOT = rtde_control.RTDEControlInterface(robot_ip, robot_frequency)
+    ROBOT = rtde_control.RTDEControlInterface(robot_ip)
 
-    ROBOT.moveJ(start_pos)
     print("start")
+    ROBOT.moveJ(start_pos)
+    seconds_start = time.time()
     ROBOT.moveJ(path)
     ROBOT.moveJ(end_pos)
+
+    seconds_end = time.time()
     print("done")
+    write_to_file(seconds_end - seconds_start, start_pos, True)
 
 def experiment_joints(start_pos, end_pos, radiuses,
                time_step, waypoints_count, position_constraints, velocity_constraints, acceleration_constraints):
@@ -123,17 +129,34 @@ def old_version_moveL(waypoints):
     print("connecting to robot")
     robot_ip = "192.168.1.20"
     rtde_c = rtde_control.RTDEControlInterface(robot_ip)
-
-    vel = 0.5
-    acc = 0.5
+  
+    vel = 1
+    acc = 1
     blend = 0.0
     path = []
-    for i in range(0, len(waypoints), 6):
+    for i in range(0, len(waypoints)):
         next_joint_pos = []
-        next_joint_pos = waypoints[i:i+6]
+        next_joint_pos = list(waypoints[i])
         next_joint_pos.append(vel)
         next_joint_pos.append(acc)
         next_joint_pos.append(blend)
         path.append(next_joint_pos)
 
-    rtde_c.moveL(path)
+    print("start")
+    rtde_c.moveJ(waypoints[0])
+    seconds_start = time.time()
+    # for el in waypoints:
+    #     rtde_c.moveJ(el)
+    rtde_c.moveJ(path)
+    seconds_end = time.time()
+    print("done")
+    write_to_file(seconds_end - seconds_start, waypoints[0], False)
+
+def write_to_file(time, id, flag):
+    if flag:
+        filename = "results/results_gomp_faster" + str(id) + ".txt"
+    else:
+        filename = "results/results_old_" + str(id) + ".txt"
+    f = open(filename, "w")
+    f.write(str(time) + "\n")
+    f.close()

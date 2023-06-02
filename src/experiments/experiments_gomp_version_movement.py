@@ -1,5 +1,7 @@
 import old_version_start_end as ovs
-from experiments_init import experiment_joints
+from experiments_init import experiment_joints, write_to_file
+import time
+
 
 # INITIAL SETUP ---------------------------------------------------------------------
 N_DIM = 6
@@ -12,7 +14,7 @@ time_step = 0.1
 waypoints_count = 40 + 2
 
 position_constraints = ([Q_MIN] * N_DIM, [Q_MAX] * N_DIM)
-velocity_constraints = ([-M_PI / 10] * N_DIM, [M_PI / 10] * N_DIM)
+velocity_constraints = ([-M_PI] * N_DIM, [M_PI] * N_DIM)
 acceleration_constraints = ([-M_PI * 800 / 180] * N_DIM, [M_PI * 800 / 180] * N_DIM)
 
 radiuses = [0.03, 0.05, 0.01, 0.05, 0.05, 0.10]
@@ -40,9 +42,11 @@ def run_experiment_default_starts():
     print("End:")
     print(ends[end_id-1])
 
+    seconds_start = time.time()
     experiment_joints(starts[start_id-1], ends[end_id-1], radiuses,
                   time_step, waypoints_count, position_constraints, 
                   velocity_constraints, acceleration_constraints)
+    seconds_end = time.time()
 
     print("done")
     print("Reverse movement?[y/n]")
@@ -55,7 +59,52 @@ def run_experiment_default_starts():
                   velocity_constraints, acceleration_constraints)
         print("done")
 
+    print("Time:")
+    print(seconds_end - seconds_start)
+    # write_to_file(seconds_end - seconds_start, start_id, True)
+
 def run_experiment_custom_starts():
+    print("start")
+    print("Which path do you want to run? (give joints)")
+    
+    #START JOINTS
+    start = []
+    print("Start joints:")
+    for i in range(6):
+        start.append(float(input()))
+    start = convert_joint_pos(start)
+
+    if len(start) != 6:
+        print("ERROR: Wrong number of joints")
+        return
+    
+    # END JOINTS
+    # end = [-0.013544384633199513, -1.244895951156952, -1.8533998727798462, -1.6163064442076625, 1.5796618461608887, -3.5252824465381067]
+    end  = [-14, -112, -107, -50, 89, -3]
+    end = convert_joint_pos(end)
+
+    seconds_start = time.time()
+    experiment_joints(start, end, radiuses,
+                  time_step, waypoints_count, position_constraints, 
+                  velocity_constraints, acceleration_constraints)
+    seconds_end = time.time()
+
+    print("done")
+    print("Reverse movement?[y/n]")
+    reverse = input()
+
+    if reverse == "y":
+        print("start")
+        experiment_joints(end, start, radiuses,
+                  time_step, waypoints_count, position_constraints, 
+                  velocity_constraints, acceleration_constraints)
+        print("done")
+
+    print("Time:")
+    print(seconds_end - seconds_start)
+    # write_to_file(seconds_end - seconds_start, start, True)
+
+def run_experiment_custom_starts_ends():
     print("start")
     print("Which path do you want to run? (give joints)")
     
@@ -81,9 +130,11 @@ def run_experiment_custom_starts():
         print("ERROR: Wrong number of joints")
         return
 
+    seconds_start = time.time()
     experiment_joints(start, end, radiuses,
                   time_step, waypoints_count, position_constraints, 
                   velocity_constraints, acceleration_constraints)
+    seconds_end = time.time()
 
     print("done")
     print("Reverse movement?[y/n]")
@@ -95,6 +146,9 @@ def run_experiment_custom_starts():
                   time_step, waypoints_count, position_constraints, 
                   velocity_constraints, acceleration_constraints)
         print("done")
+
+    print("Time:")
+    print(seconds_end - seconds_start)
 
 def run():
     print("Do you want to enter your own start and end joint positions?[y/n]")
