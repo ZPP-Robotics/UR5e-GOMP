@@ -32,7 +32,6 @@ def move_by_waypoints(start_pos,
 
     print("connecting to robot")
     robot_ip = "192.168.1.20"
-    # rtde_c = rtde_control.RTDEControlInterface("10.0.0.219")
     rtde_c = rtde_control.RTDEControlInterface(robot_ip)
 
     # Move to starting position
@@ -67,14 +66,9 @@ def move_by_waypoints_moveJ(waypoints, start_pos, end_pos):
     print(Style.BRIGHT + "Waypoints:" + Style.RESET_ALL)
     for el in path:
         print(el)
-    # for el in path[20:]:
-    #     print(el)
-       
-    # print(end_pos)
 
     print("connecting to robot")
     # robot_frequency = 100
-    # ROBOT = rtde_control.RTDEControlInterface(robot_ip, robot_frequency)
     ROBOT = rtde_control.RTDEControlInterface(robot_ip)
 
     print("start")
@@ -99,7 +93,6 @@ def experiment_joints(start_pos, end_pos, radiuses,
     gomp_solver.print_obstacles()
 
     print("Radiuses:")
-    # radiuses = [0.05, 0.05, 0.05, 0.05, 0.15]
     gomp_solver.set_radiuses(radiuses)
 
     print("RUN")
@@ -115,6 +108,7 @@ def experiment_joints(start_pos, end_pos, radiuses,
         print(Style.BRIGHT + "Waypoint count:" + Style.RESET_ALL)
         print(len(waypoints[:(len(waypoints))])//6)
 
+        print(start_pos)
         print(end_pos)
 
         # move_by_waypoints(start_pos=start_pos, waypoints=waypoints)
@@ -144,11 +138,11 @@ def old_version_moveL(waypoints):
 
     print("start")
     rtde_c.moveJ(waypoints[0])
+
     seconds_start = time.time()
-    # for el in waypoints:
-    #     rtde_c.moveJ(el)
     rtde_c.moveJ(path)
     seconds_end = time.time()
+    
     print("done")
     write_to_file(seconds_end - seconds_start, waypoints[0], False)
 
