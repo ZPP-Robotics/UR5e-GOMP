@@ -1,5 +1,5 @@
 import old_version_paths as ovp
-from experiments_init import old_version_moveL, write_to_file
+from experiments_init import old_version_moveL
 import time
 
 M_PI = 3.14159265358979323846
@@ -45,13 +45,12 @@ def run_experiment():
 
     print("Time:")
     print(seconds_end - seconds_start)
-    # write_to_file(seconds_end - seconds_start, path_id, False)
 
 def run_experiment_custom_starts():
     print("start")
     print("Which path do you want to run? (give joints)")
     
-    #START JOINTS
+    # START JOINTS
     start = []
     print("Start joints:")
     for i in range(6):
@@ -68,6 +67,7 @@ def run_experiment_custom_starts():
         pos[5] = start[5]
         waypoints.append(pos)
 
+    # END JOINTS
     end  = [-14, -112, -107, -50, 89, -3]
     end = convert_joint_pos(end)
     waypoints.append(end)
@@ -87,7 +87,13 @@ def run_experiment_custom_starts():
 
     print("Time:")
     print(seconds_end - seconds_start)
-    # write_to_file(seconds_end - seconds_start, start, False)
 
+def run():
+    print("Do you want to enter your own start joint positions?[y/n]")
 
-run_experiment_custom_starts()
+    if input() == "y":
+        run_experiment_custom_starts()
+    else:
+        run_experiment()
+
+run()
