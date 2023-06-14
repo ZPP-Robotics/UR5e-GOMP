@@ -14,7 +14,6 @@ class HorizontalLine:
         self.from_top = from_top
 
     def convert(self):
-        # return (self.point3d, self.vector3d, self.from_top)
         return (self.vector3d, self.point3d, self.from_top)
 
 class BoxParallelXYZ(Obstacle):
