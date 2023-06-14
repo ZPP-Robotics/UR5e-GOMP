@@ -1,6 +1,7 @@
 # This experiment will be done in a lab setting with two boxes.
 # We will get the starting position and end position as the 6 angles of the robot arm's joints.
 # We then will run our GOMP algorithm to get the best solution in the form of waypoints.
+
 import sys
 sys.path.append('../')
 sys.path.append('../../OSQP-Solver/debug/tests/')
@@ -51,6 +52,22 @@ print(start_pos)
 # start_pos = [1.1106168031692505, -1.9419242344298304, -1.959261417388916, -0.8121242088130494, 1.577633261680603, 2.8825175762176514]
 # end_pos = [-0.16207582155336553, -2.0053416691222132, -1.8414853811264038, -0.8576411169818421, 1.5140776634216309, -0.08804780641664678]
 # end_pos = [-0.013442818318502248, -1.2449665826610108, -1.8534693717956543, -1.6163512669005335, 1.5796295404434204, 0.054004184901714325]
+
+# Testing GOMP waypoint count for final experiment start positions and fixed end position
+# end_pos = [-0.2443, -1.9547, -1.8675, -0.8726, 1.5533, -0.0523]
+# start_pos = [0.4014, -2.0420, -1.4137, -1.2217, 1.5533, 0.5934]
+# start_pos =    [0.5235, -1.9547, -1.5533, -1.1693, 1.5707, 0.7330]
+# start_pos = [0.5885, -1.7104, -1.8849, -1.0995, 1.5707, 0.7853]
+# start_pos =  [0.6108, -1.4311, -2.1642, -1.0995, 1.5533, 0.8203]
+# start_pos =  [0.6632, -2.0071, -1.4660, -1.2042, 1.5707, 0.8552]
+# start_pos = [0.6806, -1.4835, -2.1118, -1.0821, 1.5707, 0.8901]
+# start_pos =  [0.7155, -1.9024, -1.6406, -1.1519, 1.5707, 0.9250]
+# start_pos =  [0.7853, -1.7976, -1.7802, -1.1170, 1.5707, 0.9773]
+# start_pos =  [0.8203, -1.5707, -2.0420, -1.0821, 1.5707, 1.0122]
+# start_pos = [0.8377, -1.8151, -1.7453, -1.1170, 1.5707, 1.0297]
+# start_pos =  [0.8552, -1.7104, -1.8849, -1.0995, 1.5707, 1.0471]
+# start_pos =  [1.0122, -1.6406, -1.9547, -1.0995, 1.5707, 1.2217]
+
 end_pos = [-23, -106, -117, -43, 87, -20]
 for i in range(len(end_pos)):
     end_pos[i] = end_pos[i] * M_PI / 180
