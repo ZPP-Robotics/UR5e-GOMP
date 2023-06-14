@@ -1,5 +1,5 @@
 import old_version_start_end as ovs
-from experiments_init import experiment_joints, write_to_file
+from experiments_init import experiment_joints
 import time
 
 
@@ -37,6 +37,7 @@ def run_experiment_default_starts():
     print("Which path do you want to run? (give id)")
     start_id = int(input())
     end_id = start_id
+    
     print("Start:")
     print(starts[start_id-1])
     print("End:")
@@ -61,7 +62,6 @@ def run_experiment_default_starts():
 
     print("Time:")
     print(seconds_end - seconds_start)
-    # write_to_file(seconds_end - seconds_start, start_id, True)
 
 def run_experiment_custom_starts():
     print("start")
@@ -79,7 +79,6 @@ def run_experiment_custom_starts():
         return
     
     # END JOINTS
-    # end = [-0.013544384633199513, -1.244895951156952, -1.8533998727798462, -1.6163064442076625, 1.5796618461608887, -3.5252824465381067]
     end  = [-14, -112, -107, -50, 89, -3]
     end = convert_joint_pos(end)
 
@@ -102,7 +101,6 @@ def run_experiment_custom_starts():
 
     print("Time:")
     print(seconds_end - seconds_start)
-    # write_to_file(seconds_end - seconds_start, start, True)
 
 def run_experiment_custom_starts_ends():
     print("start")
@@ -154,8 +152,12 @@ def run():
     print("Do you want to enter your own start and end joint positions?[y/n]")
 
     if input() == "y":
-        run_experiment_custom_starts()
+        run_experiment_custom_starts_ends()
     else:
-        run_experiment_default_starts()
+        print("Do you want to enter your own start joint positions?[y/n]")
+        if input() == "y":
+            run_experiment_custom_starts()
+        else:
+            run_experiment_default_starts()
 
 run()
