@@ -14,7 +14,7 @@ class HorizontalLine:
         self.from_top = from_top
 
     def convert(self):
-        return (self.point3d, self.vector3d, self.from_top)
+        return (self.vector3d, self.point3d, self.from_top)
 
 class BoxParallelXYZ(Obstacle):
     def __init__(self, ref_point: tuple[float, float, float], height: float, width: float, depth: float):
@@ -44,10 +44,10 @@ class BoxParallelXYZ(Obstacle):
         vectorAB = tuple(self.vertexB[i] - self.vertexA[i] for i in range(3))
         vectorBC = tuple(self.vertexC[i] - self.vertexB[i] for i in range(3))
 
-        lineAB = HorizontalLine(self.vertexA, vectorAB, True)
-        lineBC = HorizontalLine(self.vertexB, vectorBC, True)
-        lineDC = HorizontalLine(self.vertexD, vectorAB, True)
-        lineAD = HorizontalLine(self.vertexA, vectorBC, True)
+        lineAB = HorizontalLine(self.vertexA, vectorAB, False)
+        lineBC = HorizontalLine(self.vertexB, vectorBC, False)
+        lineDC = HorizontalLine(self.vertexD, vectorAB, False)
+        lineAD = HorizontalLine(self.vertexA, vectorBC, False)
 
         lines = []
         lines.append(lineAB)
@@ -78,7 +78,7 @@ class TwoBoxSetup(Obstacle):
         (vertexA2, vertexB2, vertexC2, vertexD2) = self.box2.get_vertices()
         
         vectorBC = tuple(vertexC1[i] - vertexB1[i] for i in range(3))
-        lineBC = HorizontalLine(vertexB1, vectorBC, True)
+        lineBC = HorizontalLine(vertexB1, vectorBC, False)
 
         minx = vertexA1[0]
         maxx = vertexC2[0]
@@ -87,12 +87,10 @@ class TwoBoxSetup(Obstacle):
         maxy = vertexA1[1]
 
         minz = min(vertexA1[2] - self.box1.depth, vertexA2[2] - self.box2.depth)
-        result = lineBC.convert()
-        # result.append(lineBC.convert())
 
         return ([lineBC.convert()], (minx, miny, minz), (maxx, maxy, inf))
 
-class Camera(Obstacle):
+class CameraBox(Obstacle):
     def __init__(self, ref_point: tuple[float, float, float], height: float):
         super().__init__(ref_point)
         self.height = height
@@ -100,4 +98,55 @@ class Camera(Obstacle):
     def convert(self):
 
         return ([], (-inf, -inf, -inf), (inf, inf, self.height))
+    
+class Camera(Obstacle):
+    def __init__(self, ref_point: tuple[float, float, float], width: float, height: float):
+        super().__init__(ref_point)
+        self.height = height
 
+                #       (width)
+        # D ------K-------- C                   ^ x
+        # |       |         |                   |
+        # |       |         | (height)          |
+        # |       |         |           y <------------
+        # |       |         |                   |
+        # |       L         |
+        # A - ref_point --- B
+        #  (x, y, z)
+
+        x, y, z = ref_point[0], ref_point[1], ref_point[2]
+
+        self.A = ref_point
+        self.B = (x, y - width, z)
+        self.C = (x + height, y - width, z)
+        self.D = (x + height, y, z)
+        self.K = (x + height, y - width / 2, z)
+        self.L = (x, y - width / 2, z )
+
+    def get_points(self):
+        return (self.A, self.B, self.C, self.D, self.K, self.L)
+    
+    def to_HorizontalLines(self):
+        vectorAD = tuple(self.D[i] - self.A[i] for i in range(3))
+        vectorBC = tuple(self.C[i] - self.B[i] for i in range(3))
+        vectorLK = tuple(self.K[i] - self.L[i] for i in range(3))
+
+        lineAD = HorizontalLine(self.A, vectorAD, True)
+        lineBC = HorizontalLine(self.B, vectorBC, True)
+        lineLK = HorizontalLine(self.L, vectorLK, True)
+
+        lines = []
+        lines.append(lineAD)
+        lines.append(lineBC)
+        lines.append(lineLK)
+
+        return lines
+
+    def convert(self):
+        lines = self.to_HorizontalLines()
+        result = []
+        for line in lines:
+            result.append(line.convert())
+
+        return (result, (-inf, -inf, -inf), (inf, inf, inf))
+    
